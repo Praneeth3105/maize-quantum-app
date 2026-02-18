@@ -1,0 +1,18 @@
+# Ignore Firebase key file (VERY IMPORTANT)
+APK File.json
+
+# Ignore Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore virtual environments
+venv/
+env/
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore Jupyter files (if any)
+.ipynb_checkpoints/
