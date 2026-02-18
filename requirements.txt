@@ -1,0 +1,9 @@
+streamlit
+tensorflow==2.20.0
+numpy==2.2.6
+scikit-learn
+joblib
+opencv-python-headless
+pennylane
+firebase-admin
+protobuf
