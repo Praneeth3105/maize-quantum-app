@@ -250,14 +250,4 @@ client_id=""
 
 ---
 
-## 👨‍💻 Author
 
-**M. Durga Praneeth**
-
-B.Tech (IoT)
-
----
-
-## 📜 License
-
-This project is developed for academic and research purposes.
