@@ -1,21 +1,13 @@
-name: Keep Streamlit Awake
+name: Debug Redirect
 
 on:
-  schedule:
-    - cron: '0 * * * *'
   workflow_dispatch:
 
 jobs:
-  ping:
+  debug:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Wake Streamlit App
+      - name: Show redirect headers
         run: |
-          curl \
-            -A "Mozilla/5.0" \
-            --max-redirs 10 \
-            --connect-timeout 10 \
-            --max-time 30 \
-            -L \
-            "https://maize-quantum-app-6jmirwun4wa2aokjqnshgh.streamlit.app/"
+          curl -I -v "https://maize-quantum-app-6jmirwun4wa2aokjqnshgh.streamlit.app/"
