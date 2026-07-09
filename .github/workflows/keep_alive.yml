@@ -1,1 +1,17 @@
 
+name: Keep Streamlit Awake
+
+on:
+  schedule:
+    # Runs every hour
+    - cron: '0 * * * *'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Wake Streamlit App
+        run: |
+          curl -L "https://maize-quantum-app-6jmirwun4wa2aokjqnshgh.streamlit.app/"
