@@ -1,15 +1,13 @@
-name: Keep Streamlit Awake
+name: Debug Streamlit
 
 on:
-  schedule:
-    - cron: "*/5 * * * *"    # Every 5 minutes
   workflow_dispatch:
 
 jobs:
-  keep_alive:
+  debug:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Wake Streamlit
+      - name: Show headers
         run: |
-          curl -L "https://maize-quantum-app-6jmirwun4wa2aokjqnshgh.streamlit.app/"
+          curl -I -v "https://maize-quantum-app-6jmirwun4wa2aokjqnshgh.streamlit.app/"
