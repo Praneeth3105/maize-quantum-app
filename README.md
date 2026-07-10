@@ -236,18 +236,6 @@ client_id=""
 ...
 ```
 
----
 
-## 📈 Future Enhancements
-
-- Mobile Application
-- Real-time Camera Detection
-- IoT Integration
-- Cloud Analytics Dashboard
-- Disease Severity Estimation
-- AI Chatbot for Farmers
-- Multilingual Support
-
----
 
 
