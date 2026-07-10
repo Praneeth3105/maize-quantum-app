@@ -2,7 +2,6 @@ name: Keep Streamlit Alive
 
 on:
   schedule:
-    # Every 5 minutes
     - cron: "*/5 * * * *"
   workflow_dispatch:
 
@@ -11,20 +10,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Wait for DNS
-        run: sleep 10
-
-      - name: Ping Streamlit App
+      - name: Ping using wget
         run: |
-          curl --silent \
-               --show-error \
-               --location \
-               --max-redirs 5 \
-               --user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" \
-               --connect-timeout 30 \
-               --max-time 60 \
-               "https://maize-quantum-app-6jmirwun4wa2aokjqnshgh.streamlit.app/" \
-               -o /dev/null
-
-      - name: Done
-        run: echo "Ping completed."
+          wget \
+            --quiet \
+            --tries=1 \
+            --timeout=60 \
+            --user-agent="Mozilla/5.0" \
+            -O /dev/null \
+            "https://maize-quantum-app-6jmirwun4wa2aokjqnshgh.streamlit.app/" || true
