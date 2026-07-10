@@ -9,28 +9,7 @@ import pennylane as qml
 import firebase_admin
 from firebase_admin import credentials, firestore
 from datetime import datetime
-import threading
-import requests
-import time
 
-APP_URL = "https://maize-quantum-app-6jmirwun4wa2aokjqnshgh.streamlit.app/"
-
-def keep_alive():
-    while True:
-        try:
-            response = requests.get(APP_URL, timeout=10)
-            print(f"Keep Alive: {response.status_code}")
-        except Exception as e:
-            print(f"Keep Alive Error: {e}")
-
-        # Wait 30 minutes
-        time.sleep(1800)
-
-if "keep_alive_started" not in st.session_state:
-    threading.Thread(target=keep_alive, daemon=True).start()
-    st.session_state.keep_alive_started = True
-
-st.set_page_config(page_title="Quantum Maize Disease Detector")
 
 # ================= FIREBASE INITIALIZATION (CLOUD ONLY) =================
 if not firebase_admin._apps:
