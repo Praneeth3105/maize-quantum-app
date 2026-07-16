@@ -1,18 +1,17 @@
 name: Ping Streamlit App
-
 on:
   schedule:
-    # Every 6 hours
     - cron: "0 */6 * * *"
   workflow_dispatch:
 
 jobs:
   ping:
     runs-on: ubuntu-latest
-
     steps:
       - name: Ping Streamlit App
         run: |
-          curl --silent --show-error --location \
-          --user-agent "Mozilla/5.0" \
-          https://maize-quantum-app-6jmirwun4wa2aokjqnshgh.streamlit.app/ > /dev/null
+          curl --fail --silent --show-error --location \
+            --max-time 60 \
+            --user-agent "Mozilla/5.0" \
+            https://maize-quantum-app-6jmirwun4wa2aokjqnshgh.streamlit.app/ \
+            -o /dev/null -w "HTTP Status: %{http_code}\n"
