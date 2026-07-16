@@ -1,8 +1,9 @@
-name: Keep Streamlit Alive
+name: Ping Streamlit App
 
 on:
   schedule:
-    - cron: "*/15 * * * *"
+    # Every 6 hours
+    - cron: "0 */6 * * *"
   workflow_dispatch:
 
 jobs:
@@ -10,8 +11,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Ping Streamlit
+      - name: Ping Streamlit App
         run: |
-          curl -I -L \
-          -A "Mozilla/5.0" \
-          https://maize-quantum-app-6jmirwun4wa2aokjqnshgh.streamlit.app/
+          curl --silent --show-error --location \
+          --user-agent "Mozilla/5.0" \
+          https://maize-quantum-app-6jmirwun4wa2aokjqnshgh.streamlit.app/ > /dev/null
