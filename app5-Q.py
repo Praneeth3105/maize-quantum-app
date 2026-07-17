@@ -17,7 +17,7 @@ import requests
 # NOTE: This only works while the app already has an active session running.
 # It will NOT prevent sleep if zero users have the tab open — for that you
 # still need an external pinger like UptimeRobot or cron-job.org.
-APP_URL = "https://your-app-url.streamlit.app"  # <-- replace with your real deployed URL
+APP_URL = "https://maize-quantum-app-6jmirwun4wa2aokjqnshgh.streamlit.app/"  # <-- replace with your real deployed URL
 
 def keep_alive_ping():
     while True:
