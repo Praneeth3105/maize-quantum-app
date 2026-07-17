@@ -9,7 +9,27 @@ import pennylane as qml
 import firebase_admin
 from firebase_admin import credentials, firestore
 from datetime import datetime
+import threading
+import time
+import requests
 
+# ================= KEEP-ALIVE (SUPPLEMENTARY ONLY) =================
+# NOTE: This only works while the app already has an active session running.
+# It will NOT prevent sleep if zero users have the tab open — for that you
+# still need an external pinger like UptimeRobot or cron-job.org.
+APP_URL = "https://your-app-url.streamlit.app"  # <-- replace with your real deployed URL
+
+def keep_alive_ping():
+    while True:
+        time.sleep(600)  # every 10 minutes
+        try:
+            requests.get(APP_URL, timeout=5)
+        except Exception:
+            pass
+
+if "keep_alive_started" not in st.session_state:
+    st.session_state.keep_alive_started = True
+    threading.Thread(target=keep_alive_ping, daemon=True).start()
 
 # ================= FIREBASE INITIALIZATION (CLOUD ONLY) =================
 if not firebase_admin._apps:
