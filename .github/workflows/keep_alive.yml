@@ -1,6 +1,8 @@
-name: Ping Streamlit App
+name: Ping Streamlit App - Keep Alive
+
 on:
   schedule:
+    # Run every 6 hours to keep the Streamlit app awake
     - cron: "0 */6 * * *"
   workflow_dispatch:
 
@@ -8,10 +10,87 @@ jobs:
   ping:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Ping Streamlit App
+        id: ping
         run: |
-          curl --fail --silent --show-error --location \
-            --max-time 60 \
-            --user-agent "Mozilla/5.0" \
-            https://maize-quantum-app-6jmirwun4wa2aokjqnshgh.streamlit.app/ \
-            -o /dev/null -w "HTTP Status: %{http_code}\n"
+          echo "🚀 Starting Streamlit App health check..."
+          echo "⏰ Timestamp: $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
+          
+          STREAMLIT_URL="https://maize-quantum-app-6jmirwun4wa2aokjqnshgh.streamlit.app/"
+          MAX_RETRIES=3
+          RETRY_COUNT=0
+          
+          while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+            RETRY_COUNT=$((RETRY_COUNT + 1))
+            echo "📡 Attempt $RETRY_COUNT of $MAX_RETRIES..."
+            
+            HTTP_CODE=$(curl \
+              --silent \
+              --show-error \
+              --max-time 30 \
+              --connect-timeout 10 \
+              --user-agent "Mozilla/5.0 (GitHub-Actions; App-Keep-Alive)" \
+              --write-out "%{http_code}" \
+              --output /tmp/response.html \
+              "$STREAMLIT_URL" || echo "000")
+            
+            echo "📊 HTTP Status Code: $HTTP_CODE"
+            
+            if [ "$HTTP_CODE" = "200" ] || [ "$HTTP_CODE" = "301" ] || [ "$HTTP_CODE" = "302" ]; then
+              echo "✅ SUCCESS! Streamlit app is alive and responsive."
+              echo "status=success" >> $GITHUB_OUTPUT
+              echo "http_code=$HTTP_CODE" >> $GITHUB_OUTPUT
+              exit 0
+            else
+              echo "⚠️  Unexpected response code: $HTTP_CODE"
+              if [ $RETRY_COUNT -lt $MAX_RETRIES ]; then
+                echo "⏳ Waiting 10 seconds before retry..."
+                sleep 10
+              fi
+            fi
+          done
+          
+          echo "❌ FAILED! App did not respond after $MAX_RETRIES attempts."
+          echo "status=failed" >> $GITHUB_OUTPUT
+          exit 1
+
+      - name: Log Success
+        if: success()
+        run: |
+          echo "✅ Keep-Alive Check PASSED"
+          echo "📍 App URL: https://maize-quantum-app-6jmirwun4wa2aokjqnshgh.streamlit.app/"
+          echo "🕐 Check completed at: $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
+          echo "Next check in: 6 hours"
+
+      - name: Log Failure
+        if: failure()
+        run: |
+          echo "❌ Keep-Alive Check FAILED"
+          echo "📍 App URL: https://maize-quantum-app-6jmirwun4wa2aokjqnshgh.streamlit.app/"
+          echo "⚠️  The app may have gone to sleep or is unreachable"
+          echo "🕐 Failed at: $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
+          echo "📋 Troubleshooting steps:"
+          echo "  1. Check if the Streamlit app is deployed"
+          echo "  2. Verify the app URL is correct"
+          echo "  3. Check Streamlit deployment status"
+          echo "  4. Review this workflow's logs for details"
+
+      - name: Create workflow summary
+        if: always()
+        run: |
+          {
+            echo "## 🔍 Keep-Alive Health Check Report"
+            echo ""
+            echo "**Status:** $([ ${{ steps.ping.outcome }} = 'success' ] && echo '✅ Healthy' || echo '❌ Failed')"
+            echo ""
+            echo "**Timestamp:** $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
+            echo ""
+            echo "**App URL:** https://maize-quantum-app-6jmirwun4wa2aokjqnshgh.streamlit.app/"
+            echo ""
+            echo "**Schedule:** Every 6 hours (0 */6 * * *)"
+            echo ""
+            echo "**Next Run:** Check GitHub Actions for next scheduled execution"
+          } >> $GITHUB_STEP_SUMMARY
