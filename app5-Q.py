@@ -1,4 +1,3 @@
-# ================= IMPORTS =================
 import streamlit as st
 import tensorflow as tf
 import numpy as np
@@ -10,8 +9,6 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 from datetime import datetime
 
-
-# ================= FIREBASE INITIALIZATION (CLOUD ONLY) =================
 if not firebase_admin._apps:
     firebase_config = dict(st.secrets["firebase"])
     cred = credentials.Certificate(firebase_config)
@@ -19,7 +16,6 @@ if not firebase_admin._apps:
 
 db = firestore.client()
 
-# ================= LOAD MODELS (NO PATHS) =================
 binary_model = tf.keras.models.load_model("binary_model.h5", compile=False)
 multi_model = tf.keras.models.load_model("multi_model.h5", compile=False)
 
@@ -30,8 +26,6 @@ quantum_params_binary = np.load("quantum_params_binary.npy")
 
 with open("class_names.json") as f:
     class_names = json.load(f)
-
-# ================= NASNET =================
 IMG_SIZE = 224
 base_model = tf.keras.applications.NASNetMobile(
     weights="imagenet",
@@ -44,7 +38,6 @@ feature_extractor = tf.keras.Model(
     tf.keras.layers.GlobalAveragePooling2D()(base_model.output)
 )
 
-# ================= QUANTUM FUNCTION =================
 def quantum_feature_map_binary(X, params):
     n_samples = X.shape[0]
     n_qubits = X.shape[1]
@@ -80,14 +73,12 @@ def quantum_feature_map_binary(X, params):
 
     return quantum_features
 
-# ================= PREPROCESS =================
 def preprocess_image(img):
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     img = cv2.resize(img, (IMG_SIZE, IMG_SIZE))
     img = img / 255.0
     return img
 
-# ================= UI =================
 st.set_page_config(page_title="Quantum Maize Disease Detector")
 st.title("🌽 Maize Leaf Disease Prediction")
 
