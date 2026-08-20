@@ -250,7 +250,3 @@ https://maize-quantum-app-6jmirwun4wa2aokjqnshgh.streamlit.app/
 > If you see that the application is unavailable, simply click the **"Wake up"** button displayed on the page. Streamlit will automatically restart the application, which usually takes **30–60 seconds**. Once the app is awake, refresh the page if necessary and continue using it normally.
 
 ---
-
-
-
-
