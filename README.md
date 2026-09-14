@@ -80,7 +80,6 @@ maize-quantum-app/
 │       └── keep_alive.yml
 └── README.md
 ```
-
 ---
 
 ## ⚙️ Workflow
