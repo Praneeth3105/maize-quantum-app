@@ -18,7 +18,6 @@ db = firestore.client()
 
 binary_model = tf.keras.models.load_model("binary_model.h5", compile=False)
 multi_model = tf.keras.models.load_model("multi_model.h5", compile=False)
-
 scaler_binary = joblib.load("scaler_binary.pkl")
 scaler_multi = joblib.load("scaler_multi.pkl")
 pca_binary = joblib.load("pca_binary.pkl")
@@ -42,9 +41,7 @@ def quantum_feature_map_binary(X, params):
     n_samples = X.shape[0]
     n_qubits = X.shape[1]
     quantum_features = np.zeros((n_samples, n_qubits * 2))
-
     dev = qml.device("default.qubit", wires=n_qubits)
-
     @qml.qnode(dev)
     def quantum_circuit(x, p, measurement_qubit):
         for i in range(n_qubits):
@@ -70,7 +67,6 @@ def quantum_feature_map_binary(X, params):
             z_exp, x_exp = quantum_circuit(X[i], params, qubit)
             features.extend([z_exp, x_exp])
         quantum_features[i] = features
-
     return quantum_features
 
 def preprocess_image(img):
@@ -81,7 +77,6 @@ def preprocess_image(img):
 
 st.set_page_config(page_title="Quantum Maize Disease Detector")
 st.title("🌽 Maize Leaf Disease Prediction")
-
 uploaded_file = st.file_uploader("Upload Leaf Image", type=["jpg", "png", "jpeg"])
 
 if uploaded_file is not None:
@@ -98,14 +93,11 @@ if uploaded_file is not None:
     feat_pca = pca_binary.transform(feat_scaled_bin)
     quantum_feat = quantum_feature_map_binary(feat_pca, quantum_params_binary)
     prob_binary = binary_model.predict(quantum_feat, verbose=0)[0][0]
-
     feat_scaled_multi = scaler_multi.transform(feat)
     probs = multi_model.predict(feat_scaled_multi, verbose=0)[0]
     pred_class = np.argmax(probs)
-
     final_label = class_names[pred_class]
     confidence = float(probs[pred_class])
-
     remedy_doc = db.collection("remedies").document(final_label).get()
     remedy_data = remedy_doc.to_dict() if remedy_doc.exists else None
 
