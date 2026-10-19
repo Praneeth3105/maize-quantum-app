@@ -8,5 +8,4 @@ pennylane
 firebase-admin
 protobuf
 
-
 // Note: If the specified requirements are not compatible with the particular version being used, we should upgrade/change to a newer compatible version and proceed with that version instead.
