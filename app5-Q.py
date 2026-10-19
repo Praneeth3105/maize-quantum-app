@@ -51,7 +51,6 @@ def quantum_feature_map_binary(X, params):
             for i in range(n_qubits):
                 qml.RY(p[layer, i, 0], wires=i)
                 qml.RZ(p[layer, i, 1], wires=i)
-
             for i in range(n_qubits - 1):
                 qml.CNOT(wires=[i, i + 1])
             qml.CNOT(wires=[n_qubits - 1, 0])
